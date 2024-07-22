@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { generateMaze } from "./util";
 import "./App.css";
+import Tile from "./tiles/tile";
 
 export default function App() {
   const [gameId, setGameId] = useState(1);
@@ -16,6 +17,8 @@ export default function App() {
 
   const [highestScore, setHighestScore] = useState(0);
 
+  const [sightView, setSightView] = useState();
+
   const maze = useMemo(() => generateMaze(size, size), [size]);
   useEffect(() => {
     const lastRowIndex = maze.length - 1;
@@ -28,11 +31,11 @@ export default function App() {
   useEffect(() => {
     if (status === "won")
       if (highestScore === 0) {
-        setHighestScore(countMoves)
+        setHighestScore(countMoves);
       } else {
         setHighestScore(Math.min(countMoves, highestScore));
       }
-  }, [countMoves, highestScore, status])
+  }, [countMoves, highestScore, status]);
 
   const makeClassName = (i, j) => {
     const rows = maze.length;
@@ -68,55 +71,66 @@ export default function App() {
     const key = e.code;
 
     const [i, j] = userPosition;
-    if (!isMovingDirectionSelected) {
-      if ((key === "ArrowUp" || key === "KeyW") && maze[i][j][0] === 1) {
-        setIsMovingDirectionSelected(true);
-        setMovingDirection("up");
+
+    let sightView = [];
+    // if (!isMovingDirectionSelected) {
+    if ((key === "ArrowUp" || key === "KeyW") && maze[i][j][0] === 1) {
+      setMovingDirection("up");
+
+      let currentPosition = [userPosition[0], userPosition[1]];
+      for (let i = 0; i < 3; i++) {
+        sightView.push([maze[currentPosition[0] - 1][currentPosition[1]]]);
+        if (currentPosition[0] > 1)
+          currentPosition = [currentPosition[0] - 1, currentPosition[1]];
+        else break;
       }
-      if ((key === "ArrowRight" || key === "KeyD") && maze[i][j][1] === 1) {
-        setIsMovingDirectionSelected(true);
-        setMovingDirection("right");
-      }
-      if ((key === "ArrowDown" || key === "KeyS") && maze[i][j][2] === 1) {
-        setIsMovingDirectionSelected(true);
-        setMovingDirection("down");
-      }
-      if ((key === "ArrowLeft" || key === "KeyA") && maze[i][j][3] === 1) {
-        setIsMovingDirectionSelected(true);
-        setMovingDirection("left");
-      }
-    } else {
-      if (key === "SpaceBar" || key === "Space") {
-        switch (movingDirection) {
-          case "up":
-            setUserPosition([i - 1, j]);
-            setMovingDirection("");
-            setIsMovingDirectionSelected(false);
-            break;
-          case "right":
-            setUserPosition([i, j + 1]);
-            setMovingDirection("");
-            setIsMovingDirectionSelected(false);
-            break;
-          case "down":
-            setUserPosition([i + 1, j]);
-            setMovingDirection("");
-            setIsMovingDirectionSelected(false);
-            break;
-          case "left":
-            setUserPosition([i, j - 1]);
-            setMovingDirection("");
-            setIsMovingDirectionSelected(false);
-            break;
-        }
-        setCountMoves(prevState => prevState = prevState + 1);
-      }
+
+      console.log(sightView);
     }
+    if ((key === "ArrowRight" || key === "KeyD") && maze[i][j][1] === 1) {
+      setMovingDirection("right");
+    }
+    if ((key === "ArrowDown" || key === "KeyS") && maze[i][j][2] === 1) {
+      setMovingDirection("down");
+    }
+    if ((key === "ArrowLeft" || key === "KeyA") && maze[i][j][3] === 1) {
+      setMovingDirection("left");
+    }
+    setIsMovingDirectionSelected(true);
+    // } else {
+    if (key === "SpaceBar" || key === "Space") {
+      switch (movingDirection) {
+        case "up":
+          setUserPosition([i - 1, j]);
+          setMovingDirection("");
+          setIsMovingDirectionSelected(false);
+          break;
+        case "right":
+          setUserPosition([i, j + 1]);
+          setMovingDirection("");
+          setIsMovingDirectionSelected(false);
+          break;
+        case "down":
+          setUserPosition([i + 1, j]);
+          setMovingDirection("");
+          setIsMovingDirectionSelected(false);
+          break;
+        case "left":
+          setUserPosition([i, j - 1]);
+          setMovingDirection("");
+          setIsMovingDirectionSelected(false);
+          break;
+      }
+      setCountMoves((prevState) => (prevState = prevState + 1));
+    }
+    // }
   };
 
   const handleUpdateSettings = () => {
     const prevSize = size;
-    const newSize = Number(document.querySelector("input[name='mazeSize']").value);
+    const newSize = Number(
+      document.querySelector("input[name='mazeSize']").value
+    );
     setSize(newSize);
     setUserPosition([0, 0]);
     setStatus("playing");
@@ -146,7 +160,8 @@ export default function App() {
         </button>
       </div>
       <p>
-        use WSAD or Arrow Keys to determine direction, and use space to move position
+        use WSAD or Arrow Keys to determine direction, and use space to move
+        position
       </p>
 
       <table id="maze">
@@ -167,6 +182,8 @@ export default function App() {
         <p>You have moved {countMoves} times</p>
         <p>Highest Score : {highestScore}</p>
       </div>
+
+      {isMovingDirectionSelected && <Tile></Tile>}
 
       {status !== "playing" && (
         <div className="info" onClick={handleUpdateSettings}>
