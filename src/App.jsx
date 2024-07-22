@@ -14,8 +14,9 @@ export default function App() {
 
   const [userPosition, setUserPosition] = useState([0, 0]);
 
-  const maze = useMemo(() => generateMaze(size, size), [size]);
+  const [highestScore, setHighestScore] = useState(0);
 
+  const maze = useMemo(() => generateMaze(size, size), [size]);
   useEffect(() => {
     const lastRowIndex = maze.length - 1;
     const lastColIndex = maze[0].length - 1;
@@ -23,6 +24,15 @@ export default function App() {
       setStatus("won");
     }
   }, [maze, userPosition]);
+
+  useEffect(() => {
+    if (status === "won")
+      if (highestScore === 0) {
+        setHighestScore(countMoves)
+      } else {
+        setHighestScore(Math.min(countMoves, highestScore));
+      }
+  }, [countMoves, highestScore, status])
 
   const makeClassName = (i, j) => {
     const rows = maze.length;
@@ -105,11 +115,17 @@ export default function App() {
   };
 
   const handleUpdateSettings = () => {
-    setSize(Number(document.querySelector("input[name='mazeSize']").value));
+    const prevSize = size;
+    const newSize = Number(document.querySelector("input[name='mazeSize']").value);
+    setSize(newSize);
     setUserPosition([0, 0]);
     setStatus("playing");
     setGameId(gameId + 1);
     setCountMoves(0);
+
+    if (prevSize !== newSize) {
+      setHighestScore(0);
+    }
   };
 
   return (
@@ -149,6 +165,7 @@ export default function App() {
 
       <div>
         <p>You have moved {countMoves} times</p>
+        <p>Highest Score : {highestScore}</p>
       </div>
 
       {status !== "playing" && (
