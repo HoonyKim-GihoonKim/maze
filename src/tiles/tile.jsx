@@ -13,6 +13,8 @@ export default function Tile() {
     );
   };
 
+  // Use SecondGroudnTile when upfront is opened.
+  // Other wise, use closedSecondGroundTile
   const secondGroundTile = () => {
     return (
       <Line
@@ -24,6 +26,23 @@ export default function Tile() {
       />
     );
   };
+
+  const closedSecondGroundTile = () => {
+    return (
+        <Line
+          x={70}
+          y={200}
+          points={[
+            0, 0, 
+            0, -200,
+            300, -200,
+            300, 0,
+        ]}
+          closed
+          stroke="black"
+        />
+      );
+  }
 
   const closedLeftTile = () => {
     return (
@@ -83,7 +102,8 @@ export default function Tile() {
         {/* {closedLeftTile()} */}
         {/* {closedRightTile()} */}
         {openedRightTile()}
-        {secondGroundTile()}
+        {/* {secondGroundTile()} */}
+        {closedSecondGroundTile()}
         {openedLeftTile()}
       </Layer>
     </Stage>
