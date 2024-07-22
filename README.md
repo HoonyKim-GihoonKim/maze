@@ -5,4 +5,4 @@ npm install
 npm run dev
 ```
 
-I referenced generating 2D maze this site: [CodeSpan Generate Maze](https://codesandbox.io/s/maze-game-g6vuy)
+I referenced generating 2D maze this site: [CodeSandbox Generate Maze](https://codesandbox.io/s/maze-game-g6vuy)
