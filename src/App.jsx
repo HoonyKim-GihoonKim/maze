@@ -183,13 +183,13 @@ export default function App() {
         <p>Highest Score : {highestScore}</p>
       </div>
 
-      {isMovingDirectionSelected && <Tile></Tile>}
-
       {status !== "playing" && (
         <div className="info" onClick={handleUpdateSettings}>
           <p>you won (click here to play again)</p>
         </div>
       )}
+      
+      {isMovingDirectionSelected && <Tile></Tile>}
     </div>
   );
 }

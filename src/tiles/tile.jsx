@@ -29,20 +29,15 @@ export default function Tile() {
 
   const closedSecondGroundTile = () => {
     return (
-        <Line
-          x={70}
-          y={200}
-          points={[
-            0, 0, 
-            0, -200,
-            300, -200,
-            300, 0,
-        ]}
-          closed
-          stroke="black"
-        />
-      );
-  }
+      <Line
+        x={70}
+        y={200}
+        points={[0, 0, 0, -170, 300, -170, 300, 0]}
+        closed
+        stroke="black"
+      />
+    );
+  };
 
   const closedLeftTile = () => {
     return (
@@ -84,28 +79,23 @@ export default function Tile() {
       <Line
         x={420}
         y={0}
-        points={[
-            0, 0, 
-            -50, 0,
-            -50, 200,
-            0, 200,
-        ]}
+        points={[0, 0, -50, 0, -50, 200, 0, 200]}
         stroke="black"
       />
     );
   };
 
   return (
-    <Stage width={window.innerWidth} height={window.innerHeight}>
-      <Layer>
-        {firstGroundTile()}
-        {/* {closedLeftTile()} */}
-        {/* {closedRightTile()} */}
-        {openedRightTile()}
-        {/* {secondGroundTile()} */}
-        {closedSecondGroundTile()}
-        {openedLeftTile()}
-      </Layer>
-    </Stage>
+      <Stage width={window.innerWidth} height={window.innerHeight} x={window.innerWidth / 2 - 200}>
+        <Layer>
+          {firstGroundTile()}
+          {/* {openedLeftTile()} */}
+          {closedLeftTile()}
+          {closedRightTile()}
+          {/* {openedRightTile()} */}
+          {/* {secondGroundTile()} */}
+          {closedSecondGroundTile()}
+        </Layer>
+      </Stage>
   );
 }
